@@ -2,15 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Start') {
+        stage('Build Docker Image') {
             steps {
-                echo "Build started"
+                sh 'docker build --no-cache -t myapp .'
             }
         }
 
-        stage('Branch Info') {
+        stage('Run Container') {
             steps {
-                sh 'echo Current branch is: $GIT_BRANCH'
+                sh 'docker stop myapp || true'
+                sh 'docker rm myapp || true'
+                sh 'docker run -d -p 80:80 --name myapp myapp'
             }
         }
     }
