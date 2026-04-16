@@ -1,7 +1,23 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     stages {
+        stage('Start') {
+            steps {
+                echo "Build started"
+            }
+        }
+
+        stage('Branch Info') {
+            steps {
+                sh 'echo Current branch is: $GIT_BRANCH'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker build --no-cache -t myapp .'
