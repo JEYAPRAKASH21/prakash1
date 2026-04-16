@@ -1,19 +1,26 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Building project...'
+                git 'https://github.com/JEYAPRAKASH21/prakash1.git'
             }
         }
-        stage('Test') {
+
+        stage('Build Docker Image') {
             steps {
-                echo 'Testing project...'
+                script {
+                    docker.build("myapp")
+                }
             }
         }
-        stage('Deploy') {
+
+        stage('Run Container') {
             steps {
-                echo 'Deploying project...'
+                sh 'docker stop myapp || true'
+                sh 'docker rm myapp || true'
+                sh 'docker run -d -p 80:80 --name myapp myapp'
             }
         }
     }
