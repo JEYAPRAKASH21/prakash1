@@ -1,78 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My DevOps Project</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Animated Website</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #141e30, #243b55);
-            color: white;
-            text-align: center;
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-        .container {
-            margin-top: 100px;
-        }
+    body {
+        overflow-x: hidden;
+        color: white;
+    }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
+    /* Animated Gradient Background */
+    body {
+        background: linear-gradient(-45deg, #6a11cb, #2575fc, #ff6a00, #ee0979);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+    }
 
-        p {
-            font-size: 1.2rem;
-            color: #ddd;
-        }
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-        .btn {
-            margin-top: 20px;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            background: #00c6ff;
-            background: linear-gradient(to right, #0072ff, #00c6ff);
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    /* Navbar */
+    nav {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 50px;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+    }
 
-        .btn:hover {
-            transform: scale(1.1);
-        }
+    nav h2 {
+        letter-spacing: 2px;
+    }
 
-        footer {
-            position: fixed;
-            bottom: 10px;
-            width: 100%;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-    </style>
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        transition: 0.3s;
+    }
+
+    nav a:hover {
+        color: #ffd166;
+    }
+
+    /* Hero Section */
+    .hero {
+        height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        animation: fadeIn 2s ease;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        max-width: 500px;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border-radius: 30px;
+        background: linear-gradient(45deg, #ff6a00, #ee0979);
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+    }
+
+    /* Card Section */
+    .cards {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        padding: 50px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 20px;
+        width: 280px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        transition: 0.4s;
+    }
+
+    .card:hover {
+        transform: translateY(-10px) scale(1.03);
+    }
+
+    .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    /* Fade Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0,0,0,0.3);
+    }
+</style>
 </head>
 
 <body>
 
-    <div class="container">
-        <h1>🚀 DevOps CI/CD Pipeline</h1>
-        <p>Deployed using Jenkins + Docker + GitHub Webhook</p>
+<nav>
+    <h2>MyBrand</h2>
+    <div>
+        <a href="#">Home</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </div>
+</nav>
 
-        <button class="btn" onclick="showMessage()">Click Me</button>
+<section class="hero">
+    <h1>🚀 Build Something Amazing</h1>
+    <p>Modern animated website with smooth UI, gradients, and professional layout.</p>
+    <a href="#" class="btn">Get Started</a>
+</section>
+
+<section class="cards">
+    <div class="card">
+        <img src="https://picsum.photos/300/200?1">
+        <div class="card-content">
+            <h3>Creative Design</h3>
+            <p>Beautiful layouts with smooth animations.</p>
+        </div>
     </div>
 
-    <footer>
-        © 2026 Prakash | Jenkins Project
-    </footer>
+    <div class="card">
+        <img src="https://picsum.photos/300/200?2">
+        <div class="card-content">
+            <h3>Modern UI</h3>
+            <p>Clean and professional user interface.</p>
+        </div>
+    </div>
 
-    <script>
-        function showMessage() {
-            alert("🔥 Pipeline is working perfectly!");
-        }
-    </script>
+    <div class="card">
+        <img src="https://picsum.photos/300/200?3">
+        <div class="card-content">
+            <h3>Responsive</h3>
+            <p>Works perfectly on all devices.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 MyBrand | Designed with ❤️</p>
+</footer>
 
 </body>
 </html>
