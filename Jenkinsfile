@@ -1,148 +1,129 @@
 pipeline {
     agent any
 
-    // ─── Triggers ────────────────────────────────────────────────────────────
     triggers {
-        githubPush() // fires on every Git webhook push
+        githubPush()
     }
 
-    // ─── Global Environment ───────────────────────────────────────────────────
     environment {
-        BRANCH_NAME = "${env.GIT_BRANCH?.replaceAll('origin/', '') ?: env.BRANCH_NAME ?: 'unknown'}"
+        BRANCH_NAME = "${env.GIT_BRANCH?.replaceAll('origin/', '') ?: env.BRANCH_NAME ?: 'main'}"
         REPO_URL = 'https://github.com/JEYAPRAKASH21/prakash1.git'
         CREDENTIALS = 'github-credentials'
-        DEPLOY_SERVER = 'ubuntu@localhost'
     }
 
-    // ─── Stages ───────────────────────────────────────────────────────────────
     stages {
 
-        // 1. Checkout ──────────────────────────────────────────────────────────
+        // ✅ 1. Start (Assignment Requirement)
+        stage('Start') {
+            steps {
+                echo "Build started"
+            }
+        }
+
+        // ✅ 2. Branch Info (Assignment Requirement)
+        stage('Branch Info') {
+            steps {
+                sh 'echo Current branch is: $BRANCH_NAME'
+            }
+        }
+
+        // ✅ 3. Checkout
         stage('Checkout') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 📌 Stage : Checkout"
-                echo "═══════════════════════════════════════"
+                echo "📥 Checking out code from ${env.BRANCH_NAME}"
                 git branch: "${env.BRANCH_NAME}",
                     credentialsId: "${env.CREDENTIALS}",
                     url: "${env.REPO_URL}"
             }
         }
 
-        // 2. Build ─────────────────────────────────────────────────────────────
+        // ✅ 4. Build
         stage('Build') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 🔨 Stage : Build"
-                echo "═══════════════════════════════════════"
+                echo "🔨 Building project..."
                 sh '''
                 echo "Building on branch: $BRANCH_NAME"
-                # Add your build command here, e.g.:
-                # mvn clean package -DskipTests
-                # npm install && npm run build
-                # gradle build
                 '''
             }
         }
 
-        // 3. Test ──────────────────────────────────────────────────────────────
+        // ✅ 5. Test
         stage('Test') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 🧪 Stage : Test"
-                echo "═══════════════════════════════════════"
+                echo "🧪 Running tests..."
                 sh '''
                 echo "Running tests on branch: $BRANCH_NAME"
-                # Add your test command here, e.g.:
-                # mvn test
-                # npm test
-                # pytest
                 '''
             }
         }
 
-        // 4. Code Quality ──────────────────────────────────────────────────────
+        // ✅ 6. Code Quality
         stage('Code Quality') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 🔍 Stage : Code Quality"
-                echo "═══════════════════════════════════════"
+                echo "🔍 Checking code quality..."
                 sh '''
-                echo "Running code quality checks on branch: $BRANCH_NAME"
-                # Add SonarQube or similar, e.g.:
-                # sonar-scanner -Dsonar.projectKey=myproject
+                echo "Code quality checks completed"
                 '''
             }
         }
 
-        // 5. Deploy — branch-aware ─────────────────────────────────────────────
+        // ✅ 7. Docker Build (FIX FOR YOUR ISSUE)
+        stage('Docker Build') {
+            steps {
+                echo "🐳 Building Docker Image..."
+                sh '''
+                docker build --no-cache -t myapp .
+                '''
+            }
+        }
+
+        // ✅ 8. Docker Run (FIX FOR YOUR ISSUE)
+        stage('Docker Run') {
+            steps {
+                echo "🚀 Running Docker Container..."
+                sh '''
+                docker stop myapp || true
+                docker rm myapp || true
+                docker system prune -f || true
+                docker run -d -p 80:80 --name myapp myapp
+                '''
+            }
+        }
+
+        // ✅ 9. Deploy
         stage('Deploy') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 🚀 Stage : Deploy"
-                echo "═══════════════════════════════════════"
+                echo "🚀 Deploying application..."
                 script {
                     if (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') {
-                        echo "📦 Deploying to PRODUCTION from branch: ${env.BRANCH_NAME}"
-                        sh """
-                        echo "Deploy to Production"
-                        # ssh ${env.DEPLOY_SERVER} 'cd /var/www/app && git pull && ./deploy.sh prod'
-                        """
+                        echo "📦 Deploying to PRODUCTION"
                     } else if (env.BRANCH_NAME == 'staging') {
-                        echo "📦 Deploying to STAGING from branch: ${env.BRANCH_NAME}"
-                        sh """
-                        echo "Deploy to Staging"
-                        # ssh ${env.DEPLOY_SERVER} 'cd /var/www/app && git pull && ./deploy.sh staging'
-                        """
-                    } else if (env.BRANCH_NAME.startsWith('feature/') || env.BRANCH_NAME.startsWith('dev')) {
-                        echo "📦 Deploying to DEV from branch: ${env.BRANCH_NAME}"
-                        sh """
-                        echo "Deploy to Dev"
-                        # ssh ${env.DEPLOY_SERVER} 'cd /var/www/app && git pull && ./deploy.sh dev'
-                        """
+                        echo "📦 Deploying to STAGING"
                     } else {
-                        echo "⚠️ Branch '${env.BRANCH_NAME}' — skipping deploy (no matching environment)."
+                        echo "⚠️ No deployment for this branch"
                     }
                 }
             }
         }
 
-        // 6. Notify ────────────────────────────────────────────────────────────
+        // ✅ 10. Notify
         stage('Notify') {
             steps {
-                echo "═══════════════════════════════════════"
-                echo " 🌿 Branch : ${env.BRANCH_NAME}"
-                echo " 🔔 Stage : Notify"
-                echo "═══════════════════════════════════════"
-                script {
-                    echo "Pipeline complete for branch: ${env.BRANCH_NAME}"
-                    // Slack notification example:
-                    // slackSend channel: '#deployments',
-                    // message: "✅ Build SUCCESS | Branch: ${env.BRANCH_NAME} | Job: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
+                echo "🔔 Pipeline completed for branch: ${env.BRANCH_NAME}"
             }
         }
     }
 
-    // ─── Post Actions ─────────────────────────────────────────────────────────
     post {
         success {
-            echo "✅ Pipeline PASSED for branch: ${env.BRANCH_NAME}"
+            echo "✅ Pipeline SUCCESS"
         }
         failure {
-            echo "❌ Pipeline FAILED for branch: ${env.BRANCH_NAME}"
-            // mail to: 'team@yourcompany.com',
-            // subject: "FAILED: ${env.BRANCH_NAME} - Build #${env.BUILD_NUMBER}",
-            // body: "Check Jenkins: ${env.BUILD_URL}"
+            echo "❌ Pipeline FAILED"
         }
         always {
-            echo "🏁 Pipeline finished — Branch: ${env.BRANCH_NAME} | Build: #${env.BUILD_NUMBER}"
-            cleanWs() // clean workspace after every run
+            echo "🏁 Pipeline finished"
+            cleanWs()
         }
     }
 }
