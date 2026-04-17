@@ -7,38 +7,46 @@ pipeline {
 
     environment {
         REPO_URL = 'https://github.com/JEYAPRAKASH21/prakash1.git'
-        CREDENTIALS = 'github-credentials'
-        BRANCH_NAME = "${env.GIT_BRANCH?.replaceAll('origin/', '') ?: 'main'}"
     }
 
     stages {
 
+        // 🔹 Start
         stage('Start') {
             steps {
                 echo "🚀 Build started"
             }
         }
 
-        stage('Show Branch') {
-            steps {
-                echo "🌿 Current branch: ${env.BRANCH_NAME}"
-            }
-        }
-
+        // 🔹 Checkout
         stage('Checkout') {
             steps {
-                git branch: "${env.BRANCH_NAME}",
-                    credentialsId: "${env.CREDENTIALS}",
-                    url: "${env.REPO_URL}"
+                git branch: 'main', url: "${env.REPO_URL}"
             }
         }
 
+        // 🔹 Show Branch (CLEAR OUTPUT)
+        stage('Show Branch') {
+            steps {
+                script {
+                    def branch = sh(
+                        script: 'git branch --show-current',
+                        returnStdout: true
+                    ).trim()
+
+                    echo "🌿 Current branch: ${branch}"
+                }
+            }
+        }
+
+        // 🔹 Build Docker Image
         stage('Build Docker Image') {
             steps {
                 sh 'docker build --no-cache -t myapp .'
             }
         }
 
+        // 🔹 Run Container
         stage('Run Container') {
             steps {
                 sh '''
@@ -52,7 +60,7 @@ pipeline {
 
     post {
         always {
-            echo "🏁 Finished build for branch: ${env.BRANCH_NAME}"
+            echo "🏁 Pipeline finished successfully"
         }
     }
 }
