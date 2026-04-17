@@ -1,16 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
-    }
-
-    environment {
-        REPO_URL = 'https://github.com/JEYAPRAKASH21/prakash1.git'
-        CREDENTIALS = 'github-credentials'
-        BRANCH_NAME = "${env.GIT_BRANCH?.replaceAll('origin/', '') ?: 'main'}"
-    }
-
     stages {
 
         stage('Start') {
@@ -21,21 +11,20 @@ pipeline {
 
         stage('Show Branch') {
             steps {
-                echo "🌿 Current branch: ${env.BRANCH_NAME}"
-            }
-        }
+                script {
+                    def branch = sh(
+                        script: "git rev-parse --abbrev-ref HEAD",
+                        returnStdout: true
+                    ).trim()
 
-        stage('Checkout') {
-            steps {
-                git branch: "${env.BRANCH_NAME}",
-                    credentialsId: "${env.CREDENTIALS}",
-                    url: "${env.REPO_URL}"
+                    echo "🌿 Current branch: ${branch}"
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build --no-cache -t myapp .'
+                sh 'docker build -t myapp .'
             }
         }
 
@@ -52,7 +41,7 @@ pipeline {
 
     post {
         always {
-            echo "🏁 Finished build for branch: ${env.BRANCH_NAME}"
+            echo "🏁 Pipeline finished"
         }
     }
 }
